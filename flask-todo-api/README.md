@@ -1,91 +1,95 @@
-# Flask Todo API
+# Docker Dev Env for Python Flask
 
-## Overview
-This project is a simple Flask API for managing a todo list. It allows users to create, read, update, and delete todo items. The API is designed to be lightweight and easy to use, making it a great starting point for learning Flask and building RESTful APIs.
+This repository provides a simple Flask API for managing a todo list, with a focus on Docker-based development and testing.
 
-## Project Structure
-```
-flask-todo-api
-├── app
-│   ├── __init__.py
-│   ├── routes.py
-│   └── models.py
-├── requirements.txt
-├── Dockerfile
-├── .dockerignore
-└── README.md
+---
+
+## Running Tests
+
+This command builds a Docker image with the code from this repository and runs the repository's tests.
+
+```sh
+docker build -t flask-todo-api .
+docker run -it flask-todo-api ./run_tests.sh
 ```
 
-## Setup Instructions
+**Example output:**
+```
+[+] Building 0.1s (10/10) FINISHED
+...
+----------------------------------------------------------------------
+Ran 4 tests in 0.069s
 
-1. **Clone the Repository**
-   ```
-   git clone <repository-url>
-   cd flask-todo-api
-   ```
+OK
+```
 
-2. **Install Dependencies**
-   Make sure you have Python and pip installed. Then, install the required packages:
-   ```
-   pip install -r requirements.txt
-   ```
+---
 
-3. **Run the Application**
-   You can run the application locally using:
-   ```
-   export FLASK_APP=app
-   export FLASK_ENV=development
-   flask run
-   ```
-   The API will be available at `http://127.0.0.1:5000`.
+## Running a Specific Test
 
-## Docker Instructions
+You can run a single test by passing its name to the test runner:
 
-1. **Build the Docker Image**
-   ```
-   docker build -t flask-todo-api .
-   ```
+```sh
+docker build -t flask-todo-api .
+docker run -it flask-todo-api ./run_tests.sh TodoTestCase.test_home
+```
 
-2. **Run the Docker Container**
-   ```
-   docker run -p 5000:5000 flask-todo-api
-   ```
+---
+
+## Running a Flask Dev Server
+
+To enable hot reloading and develop with Flask inside Docker, use the following commands:
+
+```sh
+docker build -t flask-todo-api .
+docker run --network=host -v ${PWD}:/app -it flask-todo-api flask run --host=0.0.0.0
+```
+
+- `--network=host` allows the container to use the host network (on Windows, you may need to use `-p 5000:5000` instead).
+- `-v ${PWD}:/app` mounts your current directory into the container for live code changes.
+
+---
 
 ## API Endpoints
 
-- **GET /todos**
-  - Retrieves the list of todos.
-  
-- **POST /todos**
-  - Adds a new todo. The request body should be a JSON object representing the todo item.
+- **GET `/todos`**  
+  Retrieves the list of todos.
 
-- **PUT /todos/<id>**
-  - Updates an existing todo by ID. The request body should be a JSON object with the updated todo item.
+- **POST `/todos`**  
+  Adds a new todo. The request body should be a JSON object.
 
-- **DELETE /todos/<id>**
-  - Deletes a todo by ID.
+- **PUT `/todos/<id>`**  
+  Updates an existing todo by ID.
+
+- **DELETE `/todos/<id>`**  
+  Deletes a todo by ID.
+
+---
 
 ## Example Usage
 
-### Get Todos
-```
+**Get Todos**
+```sh
 curl -X GET http://127.0.0.1:5000/todos
 ```
 
-### Add Todo
-```
+**Add Todo**
+```sh
 curl -X POST http://127.0.0.1:5000/todos -H "Content-Type: application/json" -d '{"task": "Learn Flask", "done": false}'
 ```
 
-### Update Todo
-```
+**Update Todo**
+```sh
 curl -X PUT http://127.0.0.1:5000/todos/0 -H "Content-Type: application/json" -d '{"task": "Learn Flask", "done": true}'
 ```
 
-### Delete Todo
-```
+**Delete Todo**
+```sh
 curl -X DELETE http://127.0.0.1:5000/todos/0
 ```
 
+---
+
 ## License
+
 This project is licensed under the MIT License.
