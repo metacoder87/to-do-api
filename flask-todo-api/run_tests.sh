@@ -1,1 +1,3 @@
-pytest test_app.py
+#!/bin/sh
+echo "Running tests..."
+pytest test_app.py ${@}
